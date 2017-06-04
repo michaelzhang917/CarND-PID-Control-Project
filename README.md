@@ -4,19 +4,35 @@ Self-Driving Car Engineer Nanodegree Program
 ---
 ## Reflection
 
-### PID Components
-**P** accounts for the current cte (Cross Track Error). So the further of the car is of the reference line the stronger
-the output value will be. A high coefficient for the P-error will allow the car to react quickly but also cause it to
-overshoot and oscillate.  Here is an example when only P controller is used. https://youtu.be/Iko4ZIIQtfw We can see that 
-the car is osscillating.
-
-**D** accounts for future trends based on the current change rate. A higher coefficient reduces overshooting and
-therefore helps the car to stay on the reference line. Here is an example when P and D controllers are used. 
-
-
-**I** accounts for error values in the past. In this case it is just the sum over all errors. 
-
 ### Parameter Tuning
+I tuned the parameter by trial and error. I first tuned parameter for P controller with 0.3 throttle value. In detail, I tuned the Kp until the car oscillated  https://youtu.be/Iko4ZIIQtfw. Then I tried to tune Kd to reduce the oscillation but I found there was a bias in the wheel which made the car turning counterclockwisely. https://youtu.be/PNPcCrED2aE So I also increase the value for Ki. After that, I also used the similar strategy to tune the throttle value and made the car run smoothly with speed 30km/h https://youtu.be/ctoINEvxS4k . The following valuse are the values I used for this speed.
+
+For steering,
+
+Kp = 0.1</br>
+Ki = 0.0002</br>
+Kd = 0.5
+
+For throttle,
+
+Kp = 0.3</br>
+Ki = 0.0002</br>
+Kd = 0.0
+
+Next, I tried to increase the speed limit to 50km/h and tuned the parameter for steering and it was sucessful with following setting. https://youtu.be/RlT4fRBDEJI
+
+For steering,
+
+Kp = 0.04</br>
+Ki = 0.002</br>
+Kd = 0.8
+
+For throttle,
+
+Kp = 0.3</br>
+Ki = 0.0002</br>
+Kd = 0.0
+
 To find working parameters for the P, I and D coefficients a manuel approach was chosen. In the beginning Ki and Kd 
 were set to zero. Then Kp was increased until the car oscillated. In the next step Kd was increased until the car was
 able to quickly reach it's reference. For Ki, a very small value was chosen since the simulator has basically no steering
@@ -28,28 +44,18 @@ Kp = 0.15</br>
 Ki = 0.0002</br>
 Kd = 2.0
 
+### PID Components
+**P** accounts for the current cte (Cross Track Error). So the further of the car is of the reference line the stronger
+the output value will be. A high coefficient for the P-error will allow the car to react quickly but also cause it to
+overshoot and oscillate.  Here is an example when only P controller is used. https://youtu.be/Iko4ZIIQtfw We can see that 
+the car is osscillating.
 
-Effects of increasing a parameter independently
+**D** accounts for future trends based on the current change rate. A higher coefficient reduces overshooting and
+therefore helps the car to stay on the reference line. Here is an example when P and D controllers are used. 
+https://youtu.be/PNPcCrED2aE The car is turning counterclockwisely.
 
-| Response | Rise Time | Overshoot | Settling Time | S-S Error |
-|----------|-----------|-----------|---------------|-----------|
-| Kp       | Decrease  | Increase  | NT            | Decrease  |
-| Ki       | Decrease  | Increase  | Increase      | Eliminate |
-| Kd       | NT        | Decrease  | Decrease      | NT        |
+**I** accounts for error values in the past. In this case it is just the sum over all errors. Here is an example when P and I controllers are used. https://youtu.be/15EQxKsfuyg It was running well initially but failed in a sharp turn.
 
-Jinghua Zhong (Spring 2006). "PID Controller Tuning: A Short Tutorial" (PDF). Retrieved 2011-04-04.
-
-Self-Driving Car Engineer Nanodegree Program
-
-A link to the car making it around the track is posted below.
-https://youtu.be/fAI-mBvov18
-
-
-The parameters for the controller were adjusted by trial and error, although a twiddle implementation was built in as well it tended to be very slow to train. Also the twiddle cost function was only looking for the lowest error, which meant that it could favor a pid system that swayed alot in the center of the road over one that was much smoother but it verred off to the side of the road. The parameters also were greatly affected by the speed of the car, note the speed portion was also governed by a pid controller. The steer PID controller used the P,I,D parameters, -.1, -0.0005, -.5. The I term turned out to be pretty insignificant even though the simulated car had a baised steering angle. The baised steering angle meant that if the car drove with zero steer turning then it would veer off to the right. The speed PID had P,I,D parameters of 0.3, 0.002, 0.0, so it was just a PI controller.
-
-The P term greatly impacted the amount of sway that the car had, the larger the value the larger distance it would osscillate. A high P value was important for the car to do tight turns, but too large and it would sway when going stright. The D term was very important for dampening the sway factor, and was set just by experimentation. The I term although not having a large impact to the overall system was being used to help offset the steering biasis.
-
-Although the car could go up to 30 MPH with the parameters chosen, it was set back down to 20 MPH just to be safe.
 
 ## Dependencies
 
